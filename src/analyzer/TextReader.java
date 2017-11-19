@@ -4,19 +4,23 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
+ * Reads texts files and stores as ArrayLists.
+ * Once stored, can prune beginning and end.
+ * 
  * @author rekmarks
  *
  */
 public class TextReader {
 	
 	/**
-	 * 
+	 * lines 		the lines from the text file
 	 */
 	private ArrayList<String> lines;
 	
 	
 	/**
-	 * 
+	 * Constructor
+	 * Initializes lines
 	 */
 	public TextReader() {
 		
@@ -25,20 +29,22 @@ public class TextReader {
 	}
 	
 	/**
-	 * Method for reading file.
+	 * Reads file at specified path
 	 */
 	public void readFile(String path) {
 		
-		try (Scanner in = new Scanner(new File(path))) {
+		try (Scanner in = new Scanner(new File(path), "utf-8")) {
 						
 			while (in.hasNextLine()) {
 				
 				lines.add(in.nextLine());
 			}
 			
+			// something is wrong if lines is empty at this point
 			if (lines.isEmpty()) {
 				
 				System.out.println("__TextReader: WARNING: File could not be read\n");
+				
 			} else {
 				
 				System.out.println("__TextReader: File read successfully\n");
@@ -79,6 +85,8 @@ public class TextReader {
 					break;
 				}
 			}
+			
+			System.out.println("__TextReader: Beginning pruned\n");
 		}
 		
 		// remove lines from the last up to and excluding end
@@ -98,9 +106,9 @@ public class TextReader {
 					break;
 				}
 			}
+			
+			System.out.println("__TextReader: End pruned\n");
 		}
-		
-		System.out.println("__TextReader: File pruned\n");
 	}
 	
 	
