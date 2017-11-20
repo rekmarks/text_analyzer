@@ -51,6 +51,21 @@ public class TextAnalyzer {
 		reader.pruneLines(range[0], range[1]);
 		
 		// 1. LETTERS
+		runLetters();
+		
+		// 2. WORDS
+		runWords();
+		
+		// 3. QUOTES
+		runQuotes();
+	}
+	
+	
+	/**
+	 * 
+	 */
+	private void runLetters() {
+		
 		letters.countLetterFrequency(reader.getLines());
 		
 		HashMap<Character, Integer> letterFreq = letters.getTopTen();
@@ -73,8 +88,14 @@ public class TextAnalyzer {
 			letterFreq.remove(maxKey);
 		}
 		System.out.println();
+	}
+	
+	
+	/**
+	 * 
+	 */
+	private void runWords() {
 		
-		// 2. WORDS
 		words.generateWordMap(reader.getLines());
 		
 		ArrayList<HashMap<String, Integer>> wordTops = new ArrayList<>();
@@ -103,6 +124,14 @@ public class TextAnalyzer {
 			}
 			System.out.println();
 		}
+	}
+	
+	
+	/**
+	 * 
+	 */
+	private void runQuotes() {
+		
 	}
 
 }
