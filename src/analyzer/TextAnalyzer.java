@@ -16,7 +16,6 @@ public class TextAnalyzer {
 	private LetterAnalyzer letters;
 	private WordAnalyzer words;
 	private QuoteAnalyzer quotes;
-	private int[] currentSentiments;
 	
 	
 	/**
@@ -64,22 +63,23 @@ public class TextAnalyzer {
 		reader.readFile(path);
 		reader.pruneLines(range[0], range[1]);
 		
-		// 1. LETTERS
+		// LETTERS
 		System.out.println("LETTER FREQUENCY ANALYSIS");
 		runLetters();
 		
-		// 2. WORDS
+		// WORDS
 		System.out.println("WORD FREQUENCY ANALYSIS");
 		runWords();
 		
-		// 3. SENTIMENT (wildcard)
+		// SENTIMENT (wildcard)
 		System.out.println("SENTIMENT ANALYSIS");
 		runSentiment();
 		
-		// 4. QUOTES
+		// QUOTES
 		System.out.println("QUOTE LENGTH ANALYSIS");
 		runQuotes(delimiter);
 		
+		// get rid of lines for great memory savings
 		reader.resetLines();
 		
 		System.out.println("-------------------------------");
@@ -95,6 +95,8 @@ public class TextAnalyzer {
 		
 		HashMap<Character, Integer> letterFreq = letters.getTopTen();
 		
+		// iterate through topTen, printing them out by value in 
+		// descending order
 		for (int i = 0; i < 10; i++) {
 			
 			int maxVal = 0;
@@ -125,12 +127,14 @@ public class TextAnalyzer {
 		
 		ArrayList<HashMap<String, Integer>> wordTops = new ArrayList<>();
 		
+		// get topTen both without and with stop list
 		wordTops.add(words.getTopTen(false));
 		wordTops.add(words.getTopTen(true));
 		
+		// silly counter for printing out stop list vs. no stop list
 		int count = 1;
 		
-		for (HashMap<String, Integer> hm : wordTops) {
+		for (HashMap<String, Integer> topTen : wordTops) {
 			
 			if (count == 1) {
 				System.out.println("   (without stop list)");
@@ -138,27 +142,30 @@ public class TextAnalyzer {
 				System.out.println("   (with stop list)");
 			}
 			
+			// iterate through topTen, printing them out by value in 
+			// descending order
 			for (int i = 0; i < 10; i++) {
 				
 				int maxVal = 0;
 				String maxKey = "";
 				
-				for (String key : hm.keySet()) {
+				for (String key : topTen.keySet()) {
 					
-					if (hm.get(key) > maxVal) {
+					if (topTen.get(key) > maxVal) {
 						
-						maxVal = hm.get(key);
+						maxVal = topTen.get(key);
 						maxKey = key;
 					}
 				}
 				
+				// different prints for great formatting justice
 				if (maxKey.length() < 5) {
 					System.out.println("   " + maxKey + "\t \t" + maxVal);
 				} else {
 					System.out.println("   " + maxKey + " \t" + maxVal);
 				}
 				
-				hm.remove(maxKey);
+				topTen.remove(maxKey);
 			}
 			count++;
 			System.out.println();
@@ -173,14 +180,16 @@ public class TextAnalyzer {
 		
 		int[] counts = words.getSentimentCounts();
 		
+		// calculate fractions from counts
 		float[] fracs = new float[3];
-		
 		fracs[0] = counts[1] / (float) counts[0];
 		fracs[1] = counts[2] / (float) counts[0];
 		fracs[2] = counts[3] / (float) counts[0];
 		
+		// create percentage decimal format
 		DecimalFormat f = new DecimalFormat( "##.#%" );
 		
+		// print everything very manually because why not
 		System.out.println("   COUNTS");
 		System.out.println("   Total \t" + counts[0] );
 		System.out.println("   Positive \t" + counts[1] );
@@ -190,7 +199,8 @@ public class TextAnalyzer {
 		System.out.println("   Positive \t" + f.format(fracs[0]));
 		System.out.println("   Negative \t" + f.format(fracs[1]));
 		System.out.println("   Neutral \t" + f.format(fracs[2]) + "\n");
-				
+		
+		// reset wordMap for great memory savings
 		words.resetWordMap();
 	}
 	
@@ -199,6 +209,7 @@ public class TextAnalyzer {
 	 * Runs quote analysis on current text
 	 */
 	private void runQuotes(String delimiter) {
+		
 		
 		
 		System.out.println();

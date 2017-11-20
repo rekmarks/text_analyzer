@@ -12,6 +12,7 @@ public class Analyze {
 		
 		TextAnalyzer ta = new TextAnalyzer();
 		
+		// run analysis suite on each book separately
 		String[] range = {"BOOK FIRST--A JUST MAN"
 				, "of itself, as the night comes when day is gone.]"};
 		ta.runSuite("texts/les-mis.txt", range, "\"");
@@ -45,7 +46,5 @@ public class Analyze {
 		
 		String[] range9 = {"PREFACE", "part of their lives at present."};
 		ta.runSuite("texts/tom-sawyer.txt", range9, "\"");
-
 	}
-
 }

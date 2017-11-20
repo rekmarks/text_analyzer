@@ -241,6 +241,7 @@ public class QuoteAnalyzer {
 						
 					} else {
 						
+						@SuppressWarnings("unused")
 						int lineLen = line.length();
 						
 						// if second delimiter found, we have a full quote,
@@ -339,7 +340,6 @@ public class QuoteAnalyzer {
 			
 			index = origIndex;
 		}
-
 		
 		return index;
 	}

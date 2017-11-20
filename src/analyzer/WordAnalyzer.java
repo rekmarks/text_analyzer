@@ -264,14 +264,4 @@ public class WordAnalyzer {
 		
 		return counts;
 	}
-	
-	
-	/**
-	 * TODO: delete
-	 * @return
-	 */
-	public HashMap<String, Integer> getWordMap() {
-		
-		return wordMap;
-	}
 }

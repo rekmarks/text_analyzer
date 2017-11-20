@@ -115,14 +115,4 @@ public class LetterAnalyzer {
 				
 		return topTen;
 	}
-	
-	
-	// TODO: delete
-	/**
-	 * Accessor for counts
-	 * @return		counts
-	 */
-	public int[] getCounts() {
-		return counts;
-	}
 }
