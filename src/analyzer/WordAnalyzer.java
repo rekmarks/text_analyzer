@@ -17,6 +17,8 @@ public class WordAnalyzer {
 	 */
 	private HashMap<String, Integer> wordMap;
 	private HashSet<String> stopList;
+	private HashSet<String> positiveWords;
+	private HashSet<String> negativeWords;
 	
 	
 	/**
@@ -26,8 +28,18 @@ public class WordAnalyzer {
 	 */
 	public WordAnalyzer() {
 		
-		wordMap = new HashMap<>();
 		stopList = new HashSet<>();
+		positiveWords = new HashSet<>();
+		negativeWords = new HashSet<>();
+	}
+	
+	
+	/**
+	 * 
+	 */
+	public void resetWordMap() {
+		
+		wordMap = new HashMap<>();
 	}
 	
 	
@@ -46,13 +58,30 @@ public class WordAnalyzer {
 	
 	
 	/**
-	 * Accessor for wordMap
+	 * Sets positiveWords from passed String ArrayList
 	 * 
-	 * @return		wordMap
+	 * @param list 		ArrayList representation of positive words
 	 */
-	public HashMap<String, Integer> getWordMap() {
+	public void setPositiveWords(ArrayList<String> list) {
 		
-		return wordMap;
+		for (String s : list) {
+			
+			positiveWords.add(s);
+		}
+	}
+	
+	
+	/**
+	 * Sets negativeWords from passed String ArrayList
+	 * 
+	 * @param list 		ArrayList representation of negative words
+	 */
+	public void setNegativeWords(ArrayList<String> list) {
+		
+		for (String s : list) {
+			
+			negativeWords.add(s);
+		}
 	}
 	
 	
@@ -110,6 +139,8 @@ public class WordAnalyzer {
 	 */
 	public void generateWordMap(ArrayList<String> lines) {
 		
+		resetWordMap();
+		
 		ArrayList<String> parsedLine;
 		
 		for (String line : lines) {
@@ -122,24 +153,8 @@ public class WordAnalyzer {
 				// ensure word is not empty
 				if (!word.isEmpty()) {
 					
-					// If word contains personal pronoun "I", set all letters
-					// except first to lowercase
-					if ( word.startsWith("I") 
-							&& word.contains("'") 
-							&& word.length() <= 4
-							&& !word.endsWith("s")) {
-						
-						word = word.substring(1, word.length());
-						
-						word = word.toLowerCase();
-						
-						word = "I" + word;
-					
-					// if word isn't just "I", set all letters to lowercase
-					} else if (!word.equals("I")) {
-						
-						word = word.toLowerCase();
-					}
+					// set all letters to lowercase
+					word = word.toLowerCase();
 					
 					// finally, check if wordList contains the word, and add as necessary
 					if (wordMap.containsKey(word)) {
@@ -208,5 +223,55 @@ public class WordAnalyzer {
 		}
 		
 		return topTen;		
+	}
+	
+	
+	/**
+	 * Performs basic sentiment analysis with reference to positive and 
+	 * negative word lists
+	 * 
+	 * @return 		array of total, positive, negative, and neutral word counts
+	 */
+	public int[] getSentimentCounts() {
+		
+		int totalCount = 0;
+		int positiveCount = 0;
+		int negativeCount = 0;
+		
+		// iterate through all words
+		for (String key : wordMap.keySet()) {
+			
+			// add all values to total count
+			totalCount += wordMap.get(key);
+			
+			if (positiveWords.contains(key)) {
+				
+				// add positive word values to positive count
+				positiveCount += wordMap.get(key);
+				
+			} else if (negativeWords.contains(key)) {
+				
+				// add negative word values to negative count
+				negativeCount += wordMap.get(key);
+			}
+		}
+		
+		// calculate neutral count
+		int neutralCount = totalCount - positiveCount - negativeCount;
+		
+		// initialize return array
+		int[] counts = {totalCount, positiveCount, negativeCount, neutralCount};
+		
+		return counts;
+	}
+	
+	
+	/**
+	 * TODO: delete
+	 * @return
+	 */
+	public HashMap<String, Integer> getWordMap() {
+		
+		return wordMap;
 	}
 }

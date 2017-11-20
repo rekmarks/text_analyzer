@@ -72,7 +72,9 @@ public class LetterAnalyzer {
 	
 	
 	/**
-	 * @return
+	 * Get top ten letter : count pairs by count (value)
+	 * 
+	 * @return 		the 10 most frequent letters in the text
 	 */
 	public HashMap<Character, Integer> getTopTen() {
 		
@@ -110,11 +112,12 @@ public class LetterAnalyzer {
 				}
 			}
 		}
-		
+				
 		return topTen;
 	}
 	
 	
+	// TODO: delete
 	/**
 	 * Accessor for counts
 	 * @return		counts

@@ -25,10 +25,7 @@ public class TextReader {
 	public TextReader() {
 		
 		lines = new ArrayList<>();
-<<<<<<< Updated upstream
-		
-=======
->>>>>>> Stashed changes
+
 	}
 	
 	/**
@@ -48,9 +45,6 @@ public class TextReader {
 				
 				System.out.println("__TextReader: WARNING: File could not be read\n");
 				
-			} else {
-				
-				System.out.println("__TextReader: File read successfully\n");
 			}
 						
 		} catch(Exception e) {
@@ -88,8 +82,6 @@ public class TextReader {
 					break;
 				}
 			}
-			
-			System.out.println("__TextReader: Beginning pruned\n");
 		}
 		
 		// remove lines from the last up to and excluding end
@@ -109,8 +101,6 @@ public class TextReader {
 					break;
 				}
 			}
-			
-			System.out.println("__TextReader: End pruned\n");
 		}
 	}
 	
@@ -125,16 +115,12 @@ public class TextReader {
 		return lines;
 	}
 	
-<<<<<<< Updated upstream
-}
-=======
 	
 	/**
 	 * Sets lines to null
 	 */
-	public void forgetLines() {
+	public void resetLines() {
 		
-		lines = null;
+		lines = new ArrayList<>();
 	}
 }
->>>>>>> Stashed changes
