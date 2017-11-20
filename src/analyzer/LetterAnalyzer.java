@@ -1,6 +1,7 @@
 package analyzer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Letter Frequency: Consider all letters ‘a’ – ‘z’. For the given book, count 
@@ -71,12 +72,54 @@ public class LetterAnalyzer {
 	
 	
 	/**
+	 * @return
+	 */
+	public HashMap<Character, Integer> getTopTen() {
+		
+		HashMap<Character, Integer> topTen = new HashMap<>();
+		
+		for (int i = 0; i < alphabet.length; i++) {
+			
+			// simply add the first ten entries
+			if (i < 10) {
+				
+				topTen.put(alphabet[i], counts[i]);
+				
+			} else {
+				
+				char storedKey = ' ';
+				int minVal = 0;
+				
+				// find smallest value of topTen
+				for (Character key : topTen.keySet()) {
+					
+					if (topTen.get(key) < minVal || minVal == 0) {
+						
+						storedKey = key;
+						minVal = topTen.get(key);
+					}
+				}
+				
+				// if current value of wordMap greater than the smallest value
+				// of topTen, replace the latter with the former
+				if (counts[i] > minVal) {
+					
+					topTen.remove(storedKey);
+					
+					topTen.put(alphabet[i], counts[i]);
+				}
+			}
+		}
+		
+		return topTen;
+	}
+	
+	
+	/**
 	 * Accessor for counts
 	 * @return		counts
 	 */
 	public int[] getCounts() {
 		return counts;
 	}
-	
-	// TODO: top 10 with counts goes in a method here or elsewhere?
 }

@@ -183,18 +183,26 @@ public class WordAnalyzer {
 				
 			} else {
 				
-				// iterate through topTen, replacing the first entry whose
-				// value is less than the current entry of wordMap
+				String storedKey = "";
+				int minVal = 0;
+				
+				// find smallest value of topTen
 				for (String k2 : topTen.keySet()) {
 					
-					if (wordMap.get(k1) > topTen.get(k2)) {
+					if (topTen.get(k2) < minVal || minVal == 0) {
 						
-						topTen.remove(k2);
-						
-						topTen.put(k1, wordMap.get(k1));
-						
-						break;
+						storedKey = k2;
+						minVal = topTen.get(k2);
 					}
+				}
+				
+				// if current value of wordMap greater than the smallest value
+				// of topTen, replace the latter with the former
+				if (wordMap.get(k1) > minVal) {
+					
+					topTen.remove(storedKey);
+					
+					topTen.put(k1, wordMap.get(k1));
 				}
 			}
 		}

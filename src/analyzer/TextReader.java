@@ -25,7 +25,10 @@ public class TextReader {
 	public TextReader() {
 		
 		lines = new ArrayList<>();
+<<<<<<< Updated upstream
 		
+=======
+>>>>>>> Stashed changes
 	}
 	
 	/**
@@ -122,4 +125,16 @@ public class TextReader {
 		return lines;
 	}
 	
+<<<<<<< Updated upstream
 }
+=======
+	
+	/**
+	 * Sets lines to null
+	 */
+	public void forgetLines() {
+		
+		lines = null;
+	}
+}
+>>>>>>> Stashed changes

@@ -76,6 +76,13 @@ public class Tester {
 		}
 		
 		System.out.println("\n" + letterSum);
+		
+		HashMap<Character, Integer> topTen = letters.getTopTen();
+		
+		for (Character key : topTen.keySet()) {
+			
+			System.out.println(key + " : " + topTen.get(key));
+		}
 	}
 	
 	public void testWords() {
