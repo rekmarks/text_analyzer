@@ -24,25 +24,33 @@ public class QuoteAnalyzer {
 	 */
 	public QuoteAnalyzer() {
 		
+		resetQuotes();
+	}
+	
+	
+	/**
+	 * Re-initializes quotes to empty ArrayList
+	 */
+	public void resetQuotes() {
+		
 		quotes = new ArrayList<>();
 	}
 	
 	
 	/**
-	 * Quotes accessor
-	 * @return		quotes
-	 */
-	public ArrayList<String> getQuotes() {
-		
-		return quotes;
-	}
-	
-	
-	/**
 	 * Finds and stores maybe all, but definitely most quotes (>90%) in
-	 * text
+	 * text. Even handles multi-paragraph quotes.
 	 * 
-	 * Even handles multi-paragraph ones
+	 * Assumptions:
+	 * 		- we don't want to grab quotes that aren't part of the actual book,
+	 * 		  i.e. nothing before the first chapter or author preface and 
+	 * 		  nothing after the laster chapter/footnotes/epilogue
+	 * 			- hence the breaker parameter
+	 * 		- quotes are enclosed between two of the same delimiting character
+	 * 		- the first delimiting character is preceded by whitespace and
+	 * 		  succeeded by non-line breaks
+	 * 		- the second delimiting character is preceded by non-line breaks
+	 * 		  and not succeeded by alphanumeric characters or an underscore
 	 * 
 	 * @param text			the text to be parsed, as single string
 	 * @param delimiter 		the type of quote delimiter (" or ')
@@ -58,7 +66,7 @@ public class QuoteAnalyzer {
 													+ delimiter + ")[^\\w]");
 		Matcher matcher = pattern.matcher(text);
 		
-		// this is so simple I could weep
+		// this loop is so simple I could weep
 		while (matcher.find()) {
 			
 			// stop finding quotes if breaker is found

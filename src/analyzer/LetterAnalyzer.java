@@ -4,12 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Letter Frequency: Consider all letters ‘a’ – ‘z’. For the given book, count 
- * the number of occurrences of each letter. Print out the top-10 most frequent 
- * letters along with the frequency in the book.
- */
-
-/**
  * Performs letter-based analysis of text represented as ArrayList
  * 
  * @author rekmarks
@@ -27,22 +21,23 @@ public class LetterAnalyzer {
 	
 	/**
 	 * Constructor
-	 * Initializes instance variables
+	 * Initializes alphabet
 	 */
 	public LetterAnalyzer() {
 		
 		alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
-		counts = new int[26];
 	}
 	
 	
 	/**
 	 * Iterates through ArrayList of strings and counts frequency of letters.
-	 * Ignores case.
+	 * Ignores case. Initializes counts to new int array.
 	 * 
 	 * @param lines 		Strings to iterate through
 	 */
 	public void countLetterFrequency(ArrayList<String> lines) {
+		
+		counts = new int[26];
 		
 		// iterate through lines
 		for (String line : lines) {
@@ -72,7 +67,7 @@ public class LetterAnalyzer {
 	
 	
 	/**
-	 * Get top ten letter : count pairs by count (value)
+	 * Get top ten <letter : count> pairs by count (value)
 	 * 
 	 * @return 		the 10 most frequent letters in the text
 	 */

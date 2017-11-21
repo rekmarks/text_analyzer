@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * Reads texts files and stores as ArrayLists.
+ * Reads texts files and stores as ArrayList or String.
  * Once stored, can prune beginning and end.
  * 
  * @author rekmarks
@@ -14,6 +14,7 @@ public class TextReader {
 	
 	/**
 	 * lines 		the lines from the text file
+	 * text 			the text as a single string
 	 */
 	private ArrayList<String> lines;
 	private String text;
@@ -47,7 +48,7 @@ public class TextReader {
 				// something is wrong if lines is empty at this point
 				if (lines.isEmpty()) {
 					
-					System.out.println("__TextReader: WARNING: File could not be read\n");
+					System.out.println("TextReader: WARNING: File could not be read.");
 				}
 			} else {
 				
@@ -79,7 +80,7 @@ public class TextReader {
 				// something is wrong if text is empty at this point
 				if (text.isEmpty()) {
 					
-					System.out.println("__TextReader: WARNING: File could not be read\n");
+					System.out.println("TextReader: WARNING: File could not be read.");
 				}
 			}
 				

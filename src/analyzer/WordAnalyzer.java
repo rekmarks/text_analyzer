@@ -13,7 +13,10 @@ import java.util.HashSet;
 public class WordAnalyzer {
 	
 	/**
-	 * 
+	 * wordMap 			HashMap: keys are unique words, values are counts thereof
+	 * stopList			words for stop list analysis
+	 * positiveWords 	positive words for sentiment analysis
+	 * negativeWords 	negative words for sentiment analysis
 	 */
 	private HashMap<String, Integer> wordMap;
 	private HashSet<String> stopList;
@@ -35,7 +38,7 @@ public class WordAnalyzer {
 	
 	
 	/**
-	 * 
+	 * Re-initializes wordmap to empty HashMap
 	 */
 	public void resetWordMap() {
 		

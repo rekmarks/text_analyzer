@@ -7,13 +7,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Wrapper for all other analyzer classes
+ * Wrapper for all other analyzer classes, with a PrintWriter for output
  * 
  * @author rekmarks
  *
  */
 public class TextAnalyzer {
 	
+	/**
+	 * self-explanatory		
+	 */
 	private TextReader reader;
 	private LetterAnalyzer letters;
 	private WordAnalyzer words;
@@ -27,25 +30,34 @@ public class TextAnalyzer {
 	 * Initializes instance variables. 
 	 * Sets invariant words instance variables:
 	 * 		 - stopList, negativeWords, and positiveWords
+	 * 
+	 * Initializes PrintWriter, DELETES analysis file if it already exists
 	 */
 	public TextAnalyzer() {
 		
+		// delete analysis.txt if it exists
 		try {
 			File f = new File("texts/analysis.txt");
-			f.delete();
+			if (f.delete()) {
+				System.out.println("TextAnalyzer: Existing analysis.txt deleted.");
+			}
 		} catch (Exception e) {
+			System.out.println("TextAnalyzer: WARNING: File deletion failure.");
 			e.printStackTrace();
 		}
 		
+		// initialize instance variables
 		reader = new TextReader();
 		letters = new LetterAnalyzer();
 		words = new WordAnalyzer();
 		quotes = new QuoteAnalyzer();
 		
+		// initialize PrintWriter
 		try {
 			writer = new PrintWriter("texts/analysis.txt");
+			writer.println();
 		} catch (Exception e) {
-			System.out.println("WARNING: PrintWriter failure.");
+			writer.println("TextAnalyzer: WARNING: PrintWriter failure.");
 			e.printStackTrace(writer);
 		}
 		
@@ -65,6 +77,14 @@ public class TextAnalyzer {
 	
 	
 	/**
+	 * Closes writer
+	 */
+	public void closeWriter() {
+		
+		writer.close();
+	}
+	
+	/**
 	 * Runs all forms of analysis on specified text
 	 * 
 	 * @param path			text to be analyzed
@@ -72,26 +92,27 @@ public class TextAnalyzer {
 	 * 							Note: only uses first and second elements, set
 	 * 							both to empty strings to analyze entire text
 	 * @param delimiter 		quote delimiter (" or ')
+	 * @param breaker		stop string for quote analysis
 	 */
 	public void runSuite(	String path, String[] range
 							, String delimiter, String breaker) {		
 		
-		System.out.println("\nTEXT: " + path + "\n");
+		writer.println("TEXT: " + path + "\n");
 		
 		reader.readFile(path, true);
 		reader.pruneLines(range[0], range[1]);
 		
 		// LETTERS
-		System.out.println("LETTER FREQUENCY ANALYSIS");
-		System.out.println("   Top 10 Most Frequent Letters");
+		writer.println("LETTER FREQUENCY ANALYSIS\n");
+		writer.println("   TOP 10 MOST FREQUENT LETTERS");
 		runLetters();
 		
 		// WORDS
-		System.out.println("WORD FREQUENCY ANALYSIS");
+		writer.println("WORD FREQUENCY ANALYSIS\n");
 		runWords();
 		
 		// SENTIMENT (wildcard)
-		System.out.println("WORD SENTIMENT ANALYSIS");
+		writer.println("WORD SENTIMENT ANALYSIS\n");
 		runSentiment();
 		
 		// get rid of lines for great memory savings
@@ -101,13 +122,19 @@ public class TextAnalyzer {
 		reader.readFile(path, false);
 		
 		// QUOTES
-		System.out.println("QUOTE LENGTH ANALYSIS");
+		writer.println("QUOTE LENGTH ANALYSIS\n");
 		runQuotes(delimiter, breaker);
 		
 		// get rid of text for great memory savings
 		reader.resetText();
 		
-		System.out.println("-------------------------------");
+		writer.println("-------------------------------");
+		
+		// flush here or we actually run out of buffer
+		// (is that the right term?)
+		writer.flush();
+		
+		System.out.println("TextAnalyzer: Analysis of " + path + " completed.");
 	}
 	
 	
@@ -136,10 +163,10 @@ public class TextAnalyzer {
 				}
 			}
 			
-			System.out.println("   " + maxKey + "\t\t" + maxVal);
+			writer.println("   " + maxKey + "\t\t\t\t" + maxVal);
 			letterFreq.remove(maxKey);
 		}
-		System.out.println();
+		writer.println();
 	}
 	
 	
@@ -159,14 +186,14 @@ public class TextAnalyzer {
 		// silly counter for printing out stop list vs. no stop list
 		int count = 0;
 		
-		System.out.println("   Top 10 Most Frequent Words");
+		writer.println("   TOP 10 MOST FREQUENT WORDS");
 		
 		for (HashMap<String, Integer> topTen : wordTops) {
 			
 			if (count == 0) {
-				System.out.println("   Without Stop List");
+				writer.println("   WITHOUT STOP LIST");
 			} else {
-				System.out.println("   With Stop List");
+				writer.println("   WITH STOP LIST");
 			}
 			
 			// iterate through topTen, printing them out by value in 
@@ -186,16 +213,20 @@ public class TextAnalyzer {
 				}
 				
 				// different prints for great formatting justice
-				if (maxKey.length() < 5) {
-					System.out.println("   " + maxKey + "\t \t" + maxVal);
+				if (maxKey.length() == 1) {
+					writer.println("   " + maxKey + "  \t\t\t" + maxVal);
+				} else if (maxKey.length() < 5) {
+					writer.println("   " + maxKey + " \t\t\t" + maxVal);
+				} else if (maxKey.length() > 8) {
+					writer.println("   " + maxKey + " \t" + maxVal);
 				} else {
-					System.out.println("   " + maxKey + " \t" + maxVal);
+					writer.println("   " + maxKey + " \t\t" + maxVal);
 				}
 				
 				topTen.remove(maxKey);
 			}
 			count++;
-			System.out.println();
+			writer.println();
 		}
 	}
 	
@@ -203,7 +234,7 @@ public class TextAnalyzer {
 	/**
 	 * Runs sentiment analysis on current text
 	 */
-	public void runSentiment() {
+	private void runSentiment() {
 		
 		int[] counts = words.getSentimentCounts();
 		
@@ -218,15 +249,15 @@ public class TextAnalyzer {
 		
 		// print everything very manually because a loop would be more effort
 		// than it's worth
-		System.out.println("   Word Counts");
-		System.out.println("   Total \t" + counts[0] );
-		System.out.println("   Positive \t" + counts[1] );
-		System.out.println("   Negative \t" + counts[2] );
-		System.out.println("   Neutral \t" + counts[3] );
-		System.out.println("\n   Percentages");
-		System.out.println("   Positive \t" + f.format(fracs[0]));
-		System.out.println("   Negative \t" + f.format(fracs[1]));
-		System.out.println("   Neutral \t" + f.format(fracs[2]) + "\n");
+		writer.println("   WORD COUNTS");
+		writer.println("   Total \t\t" + counts[0] );
+		writer.println("   Positive \t\t" + counts[1] );
+		writer.println("   Negative \t\t" + counts[2] );
+		writer.println("   Neutral \t\t" + counts[3] );
+		writer.println("\n   PERCENTAGES");
+		writer.println("   Positive \t\t" + f.format(fracs[0]));
+		writer.println("   Negative \t\t" + f.format(fracs[1]));
+		writer.println("   Neutral \t\t" + f.format(fracs[2]) + "\n");
 		
 		// reset wordMap for great memory savings
 		words.resetWordMap();
@@ -252,9 +283,9 @@ public class TextAnalyzer {
 		for (ArrayList<String> topTen : quoteTops) {
 			
 			if (count == 0) {
-				System.out.println("   Top 10 Longest Quotes");
+				writer.println("   TOP 10 LONGEST QUOTES");
 			} else {
-				System.out.println("   Top 10 Shortest Quotes");
+				writer.println("   TOP 10 SHORTEST QUOTES");
 			}
 			
 			// print all 10 quotes out by value in descending order
@@ -276,12 +307,15 @@ public class TextAnalyzer {
 					}
 				}
 				
-				System.out.println("   " + topTen.get(index));
+				writer.println("\t\t" + topTen.get(index));
 				
 				topTen.remove(index);
 			}
 			count++;
-			System.out.println();
+			writer.println();
 		}
+		
+		// reset for memory savings and to prepare for next text
+		quotes.resetQuotes();
 	}
 }

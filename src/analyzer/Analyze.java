@@ -1,16 +1,30 @@
 package analyzer;
 
 /**
- * User interface
+ * User interface for analyzer package
  * 
  * @author rekmarks
  *
  */
 public class Analyze {
 
+	/**
+	 * Analyzes all books in texts. 
+	 * Some foreknowledge of books required:
+	 * 		- path
+	 * 		- lines delimiting the actual content of the book (optional)
+	 * 		- character delimiting quotes
+	 * 		- string delimiting end of 
+	 * 
+	 * @param args 	n/a
+	 */
 	public static void main(String[] args) {
 		
+		System.out.println("Analyzer: Initializing TextAnalyzer.");
+		
 		TextAnalyzer ta = new TextAnalyzer();
+		
+		System.out.println("Analyzer: Analysis initiated.");
 		
 		// run analysis suite on each book separately
 		String[] range = {"BOOK FIRST--A JUST MAN"
@@ -46,5 +60,9 @@ public class Analyze {
 		
 		String[] range9 = {"PREFACE", "part of their lives at present."};
 		ta.runSuite("texts/tom-sawyer.txt", range9, "\"", "Project Gutenberg");
+		
+		ta.closeWriter();
+		
+		System.out.println("Analyze: Analysis complete.");
 	}
 }
