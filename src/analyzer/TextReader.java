@@ -16,6 +16,7 @@ public class TextReader {
 	 * lines 		the lines from the text file
 	 */
 	private ArrayList<String> lines;
+	private String text;
 	
 	
 	/**
@@ -25,28 +26,63 @@ public class TextReader {
 	public TextReader() {
 		
 		lines = new ArrayList<>();
+		text = "";
 
 	}
 	
 	/**
 	 * Reads file at specified path
 	 */
-	public void readFile(String path) {
+	public void readFile(String path, boolean byLines) {
 		
-		try (Scanner in = new Scanner(new File(path), "utf-8")) {
-						
-			while (in.hasNextLine()) {
-				
-				lines.add(in.nextLine());
-			}
+		try (Scanner in = new Scanner(new File(path))) {
 			
-			// something is wrong if lines is empty at this point
-			if (lines.isEmpty()) {
+			if (byLines) {
 				
-				System.out.println("__TextReader: WARNING: File could not be read\n");
+				while (in.hasNextLine()) {
+					
+					lines.add(in.nextLine());
+				}
 				
+				// something is wrong if lines is empty at this point
+				if (lines.isEmpty()) {
+					
+					System.out.println("__TextReader: WARNING: File could not be read\n");
+				}
+			} else {
+				
+				// without this StringBuilder it takes forever because of
+				// inefficiencies in appending to strings and garbage
+				// collection
+				StringBuilder store = new StringBuilder("");
+				
+				String line;
+				
+				while (in.hasNextLine()) {
+					
+					// get rid of leading and trailing whitespace, mostly for
+					// formatting purposes
+					line = in.nextLine().trim();
+					
+					// excessively critical addition of single space
+					// 		specifically, it makes sure that there is 
+					// 		whitespace between lines in the string which
+					//		lets later regex matching work
+					line = line  + " ";
+					
+					store.append(line);
+				}
+				
+				// I still want a normal String for the final product
+				text = store.toString();
+				
+				// something is wrong if text is empty at this point
+				if (text.isEmpty()) {
+					
+					System.out.println("__TextReader: WARNING: File could not be read\n");
+				}
 			}
-						
+				
 		} catch(Exception e) {
 			
 			e.printStackTrace();
@@ -117,10 +153,30 @@ public class TextReader {
 	
 	
 	/**
-	 * Sets lines to null
+	 * Reinitializes lines
 	 */
 	public void resetLines() {
 		
 		lines = new ArrayList<>();
+	}
+	
+	
+	/**
+	 * Text accessor
+	 * 
+	 * @return		text
+	 */
+	public String getText() {
+		
+		return text;
+	}
+	
+	
+	/**
+	 * Sets text to empty string 
+	 */
+	public void resetText() {
+		
+		text = "";
 	}
 }

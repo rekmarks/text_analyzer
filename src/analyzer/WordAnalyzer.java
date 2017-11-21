@@ -201,13 +201,22 @@ public class WordAnalyzer {
 				String storedKey = "";
 				int minVal = 0;
 				
-				// find smallest value of topTen
-				for (String k2 : topTen.keySet()) {
+				// flag for efficiency, maintains found min length in 
+				// topTen if no replacement was made
+				boolean replace = true;
+				
+				if (replace) {
 					
-					if (topTen.get(k2) < minVal || minVal == 0) {
+					// find smallest value of topTen
+					for (String k2 : topTen.keySet()) {
 						
-						storedKey = k2;
-						minVal = topTen.get(k2);
+						if (topTen.get(k2) < minVal || minVal == 0) {
+							
+							storedKey = k2;
+							minVal = topTen.get(k2);
+						}
+						
+						replace = false;
 					}
 				}
 				
@@ -216,8 +225,8 @@ public class WordAnalyzer {
 				if (wordMap.get(k1) > minVal) {
 					
 					topTen.remove(storedKey);
-					
 					topTen.put(k1, wordMap.get(k1));
+					replace = true;
 				}
 			}
 		}

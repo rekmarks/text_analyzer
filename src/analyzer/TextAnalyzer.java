@@ -1,11 +1,13 @@
 package analyzer;
 
+import java.io.PrintWriter;
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Wrapper/interface for all other analysis classes
+ * Wrapper for all other analyzer classes
  * 
  * @author rekmarks
  *
@@ -16,6 +18,7 @@ public class TextAnalyzer {
 	private LetterAnalyzer letters;
 	private WordAnalyzer words;
 	private QuoteAnalyzer quotes;
+	private PrintWriter writer;
 	
 	
 	/**
@@ -27,19 +30,33 @@ public class TextAnalyzer {
 	 */
 	public TextAnalyzer() {
 		
+		try {
+			File f = new File("texts/analysis.txt");
+			f.delete();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		reader = new TextReader();
 		letters = new LetterAnalyzer();
 		words = new WordAnalyzer();
 		quotes = new QuoteAnalyzer();
 		
+		try {
+			writer = new PrintWriter("texts/analysis.txt");
+		} catch (Exception e) {
+			System.out.println("WARNING: PrintWriter failure.");
+			e.printStackTrace(writer);
+		}
+		
 		// set words instance variables
-		reader.readFile("texts/stop-list.txt");		
+		reader.readFile("texts/stop-list.txt", true);		
 		words.setStopList(reader.getLines());
 		
-		reader.readFile("texts/positive-words.txt");
+		reader.readFile("texts/positive-words.txt", true);
 		words.setPositiveWords(reader.getLines());
 		
-		reader.readFile("texts/negative-words.txt");
+		reader.readFile("texts/negative-words.txt", true);
 		words.setNegativeWords(reader.getLines());
 		
 		// free up this memory space because why not
@@ -56,15 +73,17 @@ public class TextAnalyzer {
 	 * 							both to empty strings to analyze entire text
 	 * @param delimiter 		quote delimiter (" or ')
 	 */
-	public void runSuite(String path, String[] range, String delimiter) {		
+	public void runSuite(	String path, String[] range
+							, String delimiter, String breaker) {		
 		
 		System.out.println("\nTEXT: " + path + "\n");
 		
-		reader.readFile(path);
+		reader.readFile(path, true);
 		reader.pruneLines(range[0], range[1]);
 		
 		// LETTERS
 		System.out.println("LETTER FREQUENCY ANALYSIS");
+		System.out.println("   Top 10 Most Frequent Letters");
 		runLetters();
 		
 		// WORDS
@@ -72,15 +91,21 @@ public class TextAnalyzer {
 		runWords();
 		
 		// SENTIMENT (wildcard)
-		System.out.println("SENTIMENT ANALYSIS");
+		System.out.println("WORD SENTIMENT ANALYSIS");
 		runSentiment();
-		
-		// QUOTES
-		System.out.println("QUOTE LENGTH ANALYSIS");
-		runQuotes(delimiter);
 		
 		// get rid of lines for great memory savings
 		reader.resetLines();
+		
+		// get whole text
+		reader.readFile(path, false);
+		
+		// QUOTES
+		System.out.println("QUOTE LENGTH ANALYSIS");
+		runQuotes(delimiter, breaker);
+		
+		// get rid of text for great memory savings
+		reader.resetText();
 		
 		System.out.println("-------------------------------");
 	}
@@ -125,21 +150,23 @@ public class TextAnalyzer {
 		
 		words.generateWordMap(reader.getLines());
 		
-		ArrayList<HashMap<String, Integer>> wordTops = new ArrayList<>();
+		ArrayList<HashMap<String, Integer>> wordTops = new ArrayList<>(2);
 		
 		// get topTen both without and with stop list
 		wordTops.add(words.getTopTen(false));
 		wordTops.add(words.getTopTen(true));
 		
 		// silly counter for printing out stop list vs. no stop list
-		int count = 1;
+		int count = 0;
+		
+		System.out.println("   Top 10 Most Frequent Words");
 		
 		for (HashMap<String, Integer> topTen : wordTops) {
 			
-			if (count == 1) {
-				System.out.println("   (without stop list)");
+			if (count == 0) {
+				System.out.println("   Without Stop List");
 			} else {
-				System.out.println("   (with stop list)");
+				System.out.println("   With Stop List");
 			}
 			
 			// iterate through topTen, printing them out by value in 
@@ -189,13 +216,14 @@ public class TextAnalyzer {
 		// create percentage decimal format
 		DecimalFormat f = new DecimalFormat( "##.#%" );
 		
-		// print everything very manually because why not
-		System.out.println("   COUNTS");
+		// print everything very manually because a loop would be more effort
+		// than it's worth
+		System.out.println("   Word Counts");
 		System.out.println("   Total \t" + counts[0] );
 		System.out.println("   Positive \t" + counts[1] );
 		System.out.println("   Negative \t" + counts[2] );
 		System.out.println("   Neutral \t" + counts[3] );
-		System.out.println("\n   PERCENTAGES");
+		System.out.println("\n   Percentages");
 		System.out.println("   Positive \t" + f.format(fracs[0]));
 		System.out.println("   Negative \t" + f.format(fracs[1]));
 		System.out.println("   Neutral \t" + f.format(fracs[2]) + "\n");
@@ -208,10 +236,52 @@ public class TextAnalyzer {
 	/**
 	 * Runs quote analysis on current text
 	 */
-	private void runQuotes(String delimiter) {
+	private void runQuotes(String delimiter, String breaker) {
 		
+		quotes.findQuotes(reader.getText(), delimiter, breaker);
 		
+		ArrayList<ArrayList<String>> quoteTops = new ArrayList<ArrayList<String>>(2);
 		
-		System.out.println();
+		// add top ten longest and shortest to topTens
+		quoteTops.add(quotes.getTopTen(true));
+		quoteTops.add(quotes.getTopTen(false));
+		
+		// silly counter for printing labels
+		int count = 0;
+		
+		for (ArrayList<String> topTen : quoteTops) {
+			
+			if (count == 0) {
+				System.out.println("   Top 10 Longest Quotes");
+			} else {
+				System.out.println("   Top 10 Shortest Quotes");
+			}
+			
+			// print all 10 quotes out by value in descending order
+			for (int i = 0; i < 10; i++) {
+				
+				int maxVal = 0;
+				int index = 0;
+				String charsOnly;
+				
+				// iterate through topTen to find current longest quote
+				for (int j = 0; j < topTen.size(); j++) {
+					
+					charsOnly = topTen.get(j).replaceAll("\\s", "");
+					
+					if (charsOnly.length() > maxVal) {
+						
+						maxVal = charsOnly.length();
+						index = j;
+					}
+				}
+				
+				System.out.println("   " + topTen.get(index));
+				
+				topTen.remove(index);
+			}
+			count++;
+			System.out.println();
+		}
 	}
 }

@@ -92,14 +92,23 @@ public class LetterAnalyzer {
 				char storedKey = ' ';
 				int minVal = 0;
 				
-				// find smallest value of topTen
-				for (Character key : topTen.keySet()) {
+				// flag for efficiency, maintains found min length in 
+				// topTen if no replacement was made
+				boolean replace = true;
+				
+				if (replace) {
 					
-					if (topTen.get(key) < minVal || minVal == 0) {
+					// find smallest value of topTen
+					for (Character key : topTen.keySet()) {
 						
-						storedKey = key;
-						minVal = topTen.get(key);
+						if (topTen.get(key) < minVal || minVal == 0) {
+							
+							storedKey = key;
+							minVal = topTen.get(key);
+						}
 					}
+					
+					replace = false;
 				}
 				
 				// if current value of wordMap greater than the smallest value
@@ -107,8 +116,8 @@ public class LetterAnalyzer {
 				if (counts[i] > minVal) {
 					
 					topTen.remove(storedKey);
-					
 					topTen.put(alphabet[i], counts[i]);
+					replace = true;
 				}
 			}
 		}
