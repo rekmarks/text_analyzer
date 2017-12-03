@@ -3,7 +3,7 @@ Java application for simple text analysis
 
 ## Front Matter
 
-ATTRIBUTIONS
+#### Attributions
 
     Positive and negative words courtesy:
     
@@ -13,7 +13,7 @@ ATTRIBUTIONS
         Washington, USA.
         
 
-REGARDING THE ANALYSIS
+#### Regarding the Analysis
 
     Results can be found in "texts/analysis.txt". Running Analyze as-is will reproduce that
     file exactly.
@@ -26,7 +26,7 @@ REGARDING THE ANALYSIS
            mind, and are probably quite inaccurate in this context.
 
 
-REGARDING TESTING
+#### Regarding Testing
 
     Currently, Analyze is listed as the tester for all classes. More thorough and specific
     testing was accomplsihed during development by classes that have since been deleted.
@@ -34,9 +34,9 @@ REGARDING TESTING
 
 ## Classes
 
-PACKAGE:                analyzer
+### analyzer
 
-TextReader
+#### TextReader
 
     PURPOSE:            To read and encode text file representations of books and other
                         texts.
@@ -52,7 +52,7 @@ TextReader
     TESTER:             Analyze
     
     
-LetterAnalyzer
+#### LetterAnalyzer
 
     PURPOSE:            To perform letter frequency analysis on line-based representation
                         from TextReader.
@@ -66,7 +66,7 @@ LetterAnalyzer
     TESTER:             Analyze
     
 
-WordAnalyzer
+#### WordAnalyzer
 
     PURPOSE:            To perform word frequency and basic sentiment analysis on line-based
                         representation from TextReader.
@@ -85,7 +85,7 @@ WordAnalyzer
     TESTER:             Analyze
     
     
-QuoteAnalyzer
+#### QuoteAnalyzer
 
     PURPOSE:            To perform quote length analysis on String-based representation from
                         TextReader.
@@ -104,7 +104,7 @@ QuoteAnalyzer
     TESTER:             Analyze
     
     
-TextAnalyzer
+#### TextAnalyzer
 
     PURPOSE:            To implement simple methods for running the full analysis suite (letter, 
                         word, sentiment, quotes) on texts, and to write the results to a file.
@@ -119,7 +119,7 @@ TextAnalyzer
     TESTER:             Analyze
     
 
-Analyze
+#### Analyze
 
     PURPOSE:            To provide a user interface for the analyzer package.
     
