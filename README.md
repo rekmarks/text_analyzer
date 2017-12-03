@@ -1,5 +1,6 @@
 # text_analyzer
-Java application for simple text analysis
+
+Java application for analysis of text files: letter frequency, word frequency, simple sentiment analysis, and quote length. Comes with a set of open source texts.
 
 ## Front Matter
 
