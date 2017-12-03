@@ -44,6 +44,8 @@ Java application for analysis of text files: letter frequency, word frequency, s
     
     FUNCTIONALITY:      Reads and stores text file as ArrayList (by lines) or a single 
                         String. Prunes (removes lines from) ArrayList representation if desired.
+                        
+                        Dependencies: n/a
     
     DESIGN DECISIONS:   Attempted to keep functionality beyond reading as light as possible.
                         The addition of String representations for the purpose of quote 
@@ -59,7 +61,9 @@ Java application for analysis of text files: letter frequency, word frequency, s
                         from TextReader.
                         
     FUNCTIONALITY:      Finds frequencies of all letters in the English alphabet in the text
-                        and provides method for returning the 10 most frequent ones. 
+                        and provides method for returning the 10 most frequent ones.
+                        
+                        Dependencies: TextReader
                         
     DESIGN DECISIONS:   Decided to minimize user access to letter frequency counts, but trivial
                         to add back should it ever be useful.
@@ -77,6 +81,8 @@ Java application for analysis of text files: letter frequency, word frequency, s
                         Performs basic (very basic) sentiment analysis by counting positive, 
                         negative, and neutral words with reference to positive and negative 
                         word lists.
+                        
+                        Dependencies: TextReader
                         
     DESIGN DECISIONS:   I originally had a separate class for sentiment analysis but decided to
                         implement it in WordAnalyzer as they required a lot of the same 
@@ -102,6 +108,8 @@ Java application for analysis of text files: letter frequency, word frequency, s
                         finding quotes became very simple. As with all other methods, very light
                         on functionality aside from what's necessary.
                         
+                        Dependencies: TextReader
+                        
     TESTER:             Analyze
     
     
@@ -111,7 +119,9 @@ Java application for analysis of text files: letter frequency, word frequency, s
                         word, sentiment, quotes) on texts, and to write the results to a file.
     
     FUNCTIONALITY:      Implements methods for each type of analysis, and then a single method
-                        for calling all of them and printing their results in a legible format. 
+                        for calling all of them and printing their results in a legible format.
+                        
+                        Dependencies: TextReader, LetterAnalyzer, WordAnalyzer, QuoteAnalyzer
                         
     DESIGN DECISIONS:   I determined early on that I would need some kind of wrapper to handle
                         output writing, output formatting, and to keep the logic of the ultimate
@@ -126,6 +136,8 @@ Java application for analysis of text files: letter frequency, word frequency, s
     
     FUNCTIONALITY:      Runs the full suite of analysis on user-defined text files and writes
                         results to file.
+                        
+                        Dependencies: TextAnalyzer
                         
     DESIGN DECISIONS:   Everything in this class was always going to go in main, and all previous
                         classes were designed so that Analyze's main could be kept simple.
