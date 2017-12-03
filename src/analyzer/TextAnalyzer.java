@@ -128,7 +128,7 @@ public class TextAnalyzer {
 		// get rid of text for great memory savings
 		reader.resetText();
 		
-		writer.println("-------------------------------");
+		writer.println("----------------------------------------------------");
 		
 		// flush here or we actually run out of buffer
 		// (is that the right term?)
@@ -183,14 +183,11 @@ public class TextAnalyzer {
 		wordTops.add(words.getTopTen(false));
 		wordTops.add(words.getTopTen(true));
 		
-		// silly counter for printing out stop list vs. no stop list
-		int count = 0;
-		
 		writer.println("   TOP 10 MOST FREQUENT WORDS");
 		
 		for (HashMap<String, Integer> topTen : wordTops) {
 			
-			if (count == 0) {
+			if (topTen == wordTops.get(0)) {
 				writer.println("   WITHOUT STOP LIST");
 			} else {
 				writer.println("   WITH STOP LIST");
@@ -225,7 +222,6 @@ public class TextAnalyzer {
 				
 				topTen.remove(maxKey);
 			}
-			count++;
 			writer.println();
 		}
 	}
@@ -247,7 +243,7 @@ public class TextAnalyzer {
 		// create percentage decimal format
 		DecimalFormat f = new DecimalFormat( "##.#%" );
 		
-		// print everything very manually because a loop would be more effort
+		// print everything manually because a loop would be more effort
 		// than it's worth
 		writer.println("   WORD COUNTS");
 		writer.println("   Total \t\t" + counts[0] );
@@ -273,16 +269,13 @@ public class TextAnalyzer {
 		
 		ArrayList<ArrayList<String>> quoteTops = new ArrayList<ArrayList<String>>(2);
 		
-		// add top ten longest and shortest to topTens
+		// add top ten longest and shortest quotes to topTens
 		quoteTops.add(quotes.getTopTen(true));
 		quoteTops.add(quotes.getTopTen(false));
 		
-		// silly counter for printing labels
-		int count = 0;
-		
 		for (ArrayList<String> topTen : quoteTops) {
 			
-			if (count == 0) {
+			if (topTen == quoteTops.get(0)) {
 				writer.println("   TOP 10 LONGEST QUOTES");
 			} else {
 				writer.println("   TOP 10 SHORTEST QUOTES");
@@ -311,7 +304,6 @@ public class TextAnalyzer {
 				
 				topTen.remove(index);
 			}
-			count++;
 			writer.println();
 		}
 		
