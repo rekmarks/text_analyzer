@@ -1,6 +1,8 @@
 # text_analyzer
 Java application for simple text analysis
 
+## Front Matter
+
 ATTRIBUTIONS
 
     Positive and negative words courtesy:
@@ -30,7 +32,7 @@ REGARDING TESTING
     testing was accomplsihed during development by classes that have since been deleted.
 
 
-CLASSES
+## Classes
 
 PACKAGE:                analyzer
 
